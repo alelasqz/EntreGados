@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "427553269333",
+    "firebase_url": "https://entregados-e7d37.firebaseio.com",
+    "project_id": "entregados-e7d37",
+    "storage_bucket": "entregados-e7d37.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427553269333:android:e4d51078d892ff2f87d6dc",
+        "android_client_info": {
+          "package_name": "com.entregados"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "427553269333-6dmrf7ugqvefv43t9tfdm24uh7nfr008.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyyIgwAguIbxsRYpnZzpMPY7McKGsTjPw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "427553269333-6dmrf7ugqvefv43t9tfdm24uh7nfr008.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "427553269333-0ptevcadcs618bt2l4b5fftmjnbas97h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.EntreGados"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

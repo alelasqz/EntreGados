@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>427553269333-0ptevcadcs618bt2l4b5fftmjnbas97h.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.427553269333-0ptevcadcs618bt2l4b5fftmjnbas97h</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBIk3Q46N_oEvSdtPOyc_lmFLXvRebWQs8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>427553269333</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.reactjs.native.example.EntreGados</string>
+	<key>PROJECT_ID</key>
+	<string>entregados-e7d37</string>
+	<key>STORAGE_BUCKET</key>
+	<string>entregados-e7d37.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:427553269333:ios:6ee586ae728bef6d87d6dc</string>
+	<key>DATABASE_URL</key>
+	<string>https://entregados-e7d37.firebaseio.com</string>
+</dict>
+</plist>
