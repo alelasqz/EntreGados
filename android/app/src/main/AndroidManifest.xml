@@ -12,7 +12,9 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
-
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="default"/>
         <receiver android:name="io.invertase.firebase.notifications.RNFirebaseNotificationReceiver" />
         <receiver
             android:name="io.invertase.firebase.notifications.RNFirebaseNotificationsRebootReceiver"
@@ -48,6 +50,7 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:launchMode="singleTop" />
+
     </application>
 
 </manifest>
