@@ -4,6 +4,21 @@ import firebase from 'react-native-firebase'
 
 console.disableYellowBox = true
 
+// var firebaseConfig = {
+//     apiKey: "AIzaSyCAmBAj9dlb06its74dRxnDBcOc16mKGG4",
+//     authDomain: "entregados-e7d37.firebaseapp.com",
+//     databaseURL: "https://entregados-e7d37.firebaseio.com",
+//     projectId: "entregados-e7d37",
+//     storageBucket: "entregados-e7d37.appspot.com",
+//     messagingSenderId: "427553269333",
+//     appId: "1:427553269333:web:bd1c872dfc11f38287d6dc",
+//     measurementId: "G-H7PD8MXDZR"
+//   };
+
+// if (!firebase.apps.length) {
+//     firebase.initializeApp(firebaseConfig);
+// }
+
 export default class App extends React.Component {
 
     state = {
@@ -15,6 +30,11 @@ export default class App extends React.Component {
     UNSAFE_componentWillMount(){
         this.notificationListener()
         this.notificationOpenedListener()
+
+        // const userId = firebase.auth().currentUser;
+
+        // console.log(userId)
+
 
     }
     
@@ -167,7 +187,7 @@ export default class App extends React.Component {
                 },
                 body: JSON.stringify({
                     // "to": "edxxcKlhX0Uks32Gho64mq:APA91bF-BrIced3oGd7K2H3XTIbkZgT4_8ZZMRlZRLzNPJ0VfpK_8qjsp3yRTju7K6Z4k5w-_lN9lDSOYSjzKI_eXbsfwZQagrXoNoLfaFTUhihUZ5TO20gWl5rxRyEzjSOs4BDyMwQC",
-                    "to": "fhiSaXgER-SXuHCFIR-_Iu:APA91bE_nS7ZtdzrMrnDRZVF-jc0OYuk3S7qNUCu9kruwaQGwR0mVS8qE9QQq3bfRRDGR3Z1Rbo34fFK6GW6VGGuE-EEjtHKAUTQ5pwAry4K_Y5ddHuQSfqBuFxXa0IU_8DUCjOjGY8Y",
+                    "to": "eem16v2ZRSOl127p-wiN3e:APA91bFklvJ-3DOExH8kAuiIIRKNMmZ_jOsTAk9D8lO502QKsbbQBQHPbWJJbw-yLQ8PkIhAzgdxTjRZ-AgoenEB-LsgiEIHlnN08YGZ0t2D1rWUiO-tyGmfvF_arPOwF9auugDFOh8W",
                     "notification": {
                         "body": "Cuerpo del Mensaje",
                         "title": "Titulo del Mensaje",
@@ -180,7 +200,7 @@ export default class App extends React.Component {
                 })
             }).then((response) => response.json())
             .then((responseJson) => {
-                alert(responseJson.results[0].message_id)
+                console.log(responseJson)
             })
         } catch {
             alert(error)
