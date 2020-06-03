@@ -4,6 +4,21 @@ import firebase from 'react-native-firebase'
 
 console.disableYellowBox = true
 
+// var firebaseConfig = {
+//     apiKey: "AIzaSyCAmBAj9dlb06its74dRxnDBcOc16mKGG4",
+//     authDomain: "entregados-e7d37.firebaseapp.com",
+//     databaseURL: "https://entregados-e7d37.firebaseio.com",
+//     projectId: "entregados-e7d37",
+//     storageBucket: "entregados-e7d37.appspot.com",
+//     messagingSenderId: "427553269333",
+//     appId: "1:427553269333:web:bd1c872dfc11f38287d6dc",
+//     measurementId: "G-H7PD8MXDZR"
+//   };
+
+// if (!firebase.apps.length) {
+//     firebase.initializeApp(firebaseConfig);
+// }
+
 export default class App extends React.Component {
 
     state = {
@@ -27,14 +42,11 @@ export default class App extends React.Component {
         this.checkPermission()
         this.createNotificationListeners()
         this.createChannel()
-       
-        
-
     }
     
     componentWillUnmount(){
         // this.notificationOpenedListener()
-        this.notificationOpenBackListener()
+        // this.notificationOpenBackListener()
     }
 
     async checkPermission() {
@@ -63,7 +75,7 @@ export default class App extends React.Component {
             if (notificationOpen) {
                 const { title, body } = notificationOpen.notification._data;
                 if(body){
-                    this.showAlert(title, body);
+                    // this.showAlert(title, body);
                     this.setState({
                         titulo: title,
                         cuerpo: body
@@ -71,12 +83,6 @@ export default class App extends React.Component {
                 }
             }
         });
-
-        // const notificationOpen = await firebase.notifications().getInitialNotification();
-        // if (notificationOpen) {
-        //     const { title, body } = notificationOpen.notification;
-        //     this.showAlert(title, body);
-        // }
 
         this.messageListener = await firebase.messaging().onMessage( async message => {
             const { title, body } = message._data;
@@ -96,9 +102,6 @@ export default class App extends React.Component {
             this.setState({
                 token: await firebase.messaging().getToken()
             })
-
-            console.log(this.state.token)
-
             // if (token) {
             //     await AsyncStorage.setItem('fcmToken', fcmToken);
             // }
@@ -115,27 +118,11 @@ export default class App extends React.Component {
     //     firebase.notifications().android.createChannel(channel);
     // };
 
-    
-        notificationOpenBackListener = async () => {
-            // var response = await firebase.notifications().getInitialNotification();
-    
-            // alert(response.notification._data.title)
-                this.notificationOpen =  await firebase.notifications().getInitialNotification().then((notificationOpen) => {
-                    if (notificationOpen) {
-                        const { title, body } = notificationOpen.notification._data;
-                        if(body){
-                            this.showAlert(title, body);
-                            this.setState({
-                                titulo: title,
-                                cuerpo: body
-                            })
-                        }
-                    }
-                }).catch(error => alert(error));
-           
-        };
-    
-    
+    // notificationOpenBackListener = async () => {
+    //     var response = await firebase.notifications().getInitialNotification();
+
+    //     alert(response.notification._data.title)
+    // };
 
     async createChannel(){
         const channel = new firebase.notifications.Android.Channel(
@@ -199,9 +186,8 @@ export default class App extends React.Component {
                     'Authorization': 'key=AAAAY4wpJlU:APA91bFEGYifNZgW89cYWx_Btwb0pgJlBVase4Hf3Il-c639RgXvP-4JFpPRfetG-h4nNqu3V8AHPOw7Yk0aahRrorpdcxsUJQZTa81ETJo-L3Dmmgo3skl7wasEFJRMv8lj1J4Iqw_u'
                 },
                 body: JSON.stringify({
-                    // "to": "eU-pBpye709lpP-DKl-SSB:APA91bEI6ZONeEwdYD8JwKZsL2XZwV7w9w56RXpTTRPyBwGOpsGU3uYF5sGoxf-lALsKMm3_hRenvXlz5jUzWffYWY9Qc2gdIX_sHNr85RSlmIa5q1Igr7EHYexhQyui14fiDqIIPqcU",
+                    // "to": "edxxcKlhX0Uks32Gho64mq:APA91bF-BrIced3oGd7K2H3XTIbkZgT4_8ZZMRlZRLzNPJ0VfpK_8qjsp3yRTju7K6Z4k5w-_lN9lDSOYSjzKI_eXbsfwZQagrXoNoLfaFTUhihUZ5TO20gWl5rxRyEzjSOs4BDyMwQC",
                     "to": "eem16v2ZRSOl127p-wiN3e:APA91bFklvJ-3DOExH8kAuiIIRKNMmZ_jOsTAk9D8lO502QKsbbQBQHPbWJJbw-yLQ8PkIhAzgdxTjRZ-AgoenEB-LsgiEIHlnN08YGZ0t2D1rWUiO-tyGmfvF_arPOwF9auugDFOh8W",
-                    
                     "notification": {
                         "body": "Cuerpo del Mensaje",
                         "title": "Titulo del Mensaje",
