@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, View, Text, AsyncStorage, Alert, SafeAreaView, TouchableOpacity, Button  } from 'react-native';
+import { StyleSheet, View, Text, AsyncStorage, Alert, SafeAreaView, TouchableOpacity, Button , Platform } from 'react-native';
 import firebase from 'react-native-firebase'
 
 console.disableYellowBox = true
@@ -12,173 +12,123 @@ export default class App extends React.Component {
         token: false
     }
 
-    UNSAFE_componentWillMount(){
-        this.notificationListener()
-        this.notificationOpenedListener()
+    async UNSAFE_componentWillMount(){
+        this.checkPermission()
+        this.createNotificationListeners()
 
-        // const userId = firebase.auth().currentUser;
-
-        // console.log(userId)
-
-
+        // await firebase.notifications().onNotificationOpened(message => {
+        //     this.mostrarMensaje(message.notification._data)
+        // });
     }
     
     componentDidMount(){
-        this.checkPermission()
         this.createNotificationListeners()
-        this.createChannel()
-       
-        
-
     }
     
-    componentWillUnmount(){
-        // this.notificationOpenedListener()
-        this.notificationOpenBackListener()
-    }
-
-    async checkPermission() {
-        const enabled = await firebase.messaging().hasPermission();
-        if (enabled) {
-            this.getToken();
-        } else {
-            this.requestPermission();
-        }
-    };
-
-    async createNotificationListeners() {
-        // ESTE SE EJECUTA DENTRO DE LA APLCIACION
-        this.notificationListener = await firebase.notifications().onNotification((notification) => {
-            const { title, body } = notification;
-            this.showAlert(title, body);
-        });
-    
-        this.notificationOpenedListener = await firebase.notifications().onNotificationOpened((notificationOpen) => {
-            // const { title, body } = notificationOpen.notification;
-            // this.showAlert(title, body);
-            alert('notificationOpenedListener')
+    async componentWillUnmount(){
+        await firebase.notifications().onNotificationOpened(message => {
+            this.mostrarMensaje(message.notification._data)
         });
 
-        this.notificationOpen =  await firebase.notifications().getInitialNotification().then((notificationOpen) => {
-            if (notificationOpen) {
-                const { title, body } = notificationOpen.notification._data;
-                if(body){
-                    this.showAlert(title, body);
-                    this.setState({
-                        titulo: title,
-                        cuerpo: body
-                    })
-                }
-            }
-        });
-
-        // const notificationOpen = await firebase.notifications().getInitialNotification();
-        // if (notificationOpen) {
-        //     const { title, body } = notificationOpen.notification;
-        //     this.showAlert(title, body);
-        // }
-
-        this.messageListener = await firebase.messaging().onMessage( async message => {
-            const { title, body } = message._data;
-            this.showAlert(title, body);
-            this.setState({
-                titulo: title,
-                cuerpo: body
-            })
+        await firebase.notifications().getInitialNotification().then(message => {
+            this.mostrarMensaje(message.notification._data)
         });
     }
 
-    async getToken(){
-        // let fcmToken = await AsyncStorage.getItem('fcmToken');
-        let { token } = this.state;
-        if (!token) {
-            // fcmToken = await firebase.messaging().getToken();
-            this.setState({
-                token: await firebase.messaging().getToken()
-            })
-
-            console.log(this.state.token)
-
-            // if (token) {
-            //     await AsyncStorage.setItem('fcmToken', fcmToken);
-            // }
-        }
-    };
-
-    // createChannel(){
-    //     const channel = new firebase.notifications.Android.Channel(
-    //         CHANNEL_NOTIFICATIONS.CHANNEL_ID,
-    //         CHANNEL_NOTIFICATIONS.CHANNEL_NAME,
-    //         firebase.notifications.Android.Importance.Max
-    //     ).setDescription(CHANNEL_NOTIFICATIONS.CHANNEL_DESCRIPTION);
-        
-    //     firebase.notifications().android.createChannel(channel);
-    // };
-
-    
-        notificationOpenBackListener = async () => {
-            // var response = await firebase.notifications().getInitialNotification();
-    
-            // alert(response.notification._data.title)
-                this.notificationOpen =  await firebase.notifications().getInitialNotification().then((notificationOpen) => {
-                    if (notificationOpen) {
-                        const { title, body } = notificationOpen.notification._data;
-                        if(body){
-                            this.showAlert(title, body);
-                            this.setState({
-                                titulo: title,
-                                cuerpo: body
-                            })
-                        }
-                    }
-                }).catch(error => alert(error));
-           
+    //PERMISOS
+        async checkPermission() {
+            const enabled = await firebase.messaging().hasPermission();
+            enabled ? this.getToken() : this.requestPermission() 
         };
-    
-    
 
-    async createChannel(){
-        const channel = new firebase.notifications.Android.Channel(
-            1,
-            'Categoria1',
-            2
-        ).setDescription('Descripción Categoria 1');
+        async getToken(){
+            let { token } = this.state;
 
-        await firebase.notifications().android.createChannel(channel);
+            if (!token) {
+                this.setState({
+                    token: await firebase.messaging().getToken()
+                })
 
-    };
+                var arreglo = {}
+                var plataforma = Platform.OS === 'ios' ? 'IOS' : 'ANDROID' 
 
-    notificationListener = () => {
-        firebase.notifications().onNotification(response => {
+                arreglo[plataforma] = { 
+                    token : this.state.token
+                }
 
-            // response.android.setChannelId('default');
-            response.android.setPriority(2);
-            response.setData(response.data);
-            this.setState({
-                titulo: response._title,
-                cuerpo: response._body
-            })
-            firebase.notifications().displayNotification(response);
-        });
-    }
+                await firebase.database().ref('tokens').update(arreglo)
+            }
+        };
 
-    notificationOpenedListener = () => {
-        firebase.notifications().onNotificationOpened(notificationOpen => {
-            alert('notificationOpenedListener')
-        });
-    }
-
-    requestPermission = async () => {
-        firebase
-            .messaging()
-            .requestPermission()
-            .then(() => {
+        async requestPermission() { 
+            await firebase.messaging().requestPermission().then(() => {
                 this.getToken();
             })
             .catch(error => {
                 alert(`${error} permission rejected`);
             });
+        
+        }
+    // FIN PERMISOS
+
+
+    mostrarMensaje(data) {
+        const { title, body } = data
+        this.showAlert( title, body )
+        this.setState({
+            titulo: title,
+            cuerpo: body
+        })
     }
+
+    async createNotificationListeners() {
+        await firebase.notifications().onNotification(message => {
+            this.mostrarMensaje(message._data)
+            message.android.setPriority(2);
+            message.setData(message.data);
+            // firebase.notifications().displayNotification(message);
+            // firebase.notifications().removeDeliveredNotification(message.notificationId);
+        });
+
+        await firebase.notifications().onNotificationOpened(message => {
+            this.mostrarMensaje(message.notification._data)
+        });
+
+        await firebase.messaging().onMessage(message => {
+            this.mostrarMensaje(message._data)
+        });
+
+        await firebase.notifications().getInitialNotification().then(message => {
+            this.mostrarMensaje(message.notification._data)
+        });
+
+        
+    }
+
+    // notificationListener = async () => {
+    //     await firebase.notifications().onNotification(response => {
+    //         alert('ANDROID ABIERTO')
+    //         // response.android.setPriority(2);
+    //         // response.setData(response.data);
+    //         // this.setState({
+    //         //     titulo: 'ESTO_TITLE',
+    //         //     cuerpo: 'ESTO_BODY'
+    //         // })
+    //         firebase.notifications().displayNotification(response);
+                // firebase.notifications().removeDeliveredNotification(notification.notificationId);
+    //     });
+    // }
+
+
+
+
+    // notificationOpenedListener = () => {
+    //     firebase.notifications().onNotificationOpened(notificationOpen => {
+    //         alert('notificationOpenedListener')
+    //     });
+    // }
+
+    
 
     showAlert(title, body) {
         Alert.alert(
@@ -190,7 +140,19 @@ export default class App extends React.Component {
         );
     }
 
-    enviarMensaje(){
+    async enviarMensaje(){
+        var plataforma = Platform.OS === 'ios' ? 'ANDROID' : 'IOS'
+
+        try{
+            await firebase.database().ref('tokens/' + plataforma).once('value').then(snapshot => {
+                this.setState({
+                    enviarA: snapshot.val().token
+                });
+            }); 
+        } catch (error) {
+            alert(error)
+        }
+
         try{
             fetch('https://fcm.googleapis.com/fcm/send', {
                 method: 'POST',
@@ -199,12 +161,10 @@ export default class App extends React.Component {
                     'Authorization': 'key=AAAAY4wpJlU:APA91bFEGYifNZgW89cYWx_Btwb0pgJlBVase4Hf3Il-c639RgXvP-4JFpPRfetG-h4nNqu3V8AHPOw7Yk0aahRrorpdcxsUJQZTa81ETJo-L3Dmmgo3skl7wasEFJRMv8lj1J4Iqw_u'
                 },
                 body: JSON.stringify({
-                    // "to": "eU-pBpye709lpP-DKl-SSB:APA91bEI6ZONeEwdYD8JwKZsL2XZwV7w9w56RXpTTRPyBwGOpsGU3uYF5sGoxf-lALsKMm3_hRenvXlz5jUzWffYWY9Qc2gdIX_sHNr85RSlmIa5q1Igr7EHYexhQyui14fiDqIIPqcU",
-                    "to": "eem16v2ZRSOl127p-wiN3e:APA91bFklvJ-3DOExH8kAuiIIRKNMmZ_jOsTAk9D8lO502QKsbbQBQHPbWJJbw-yLQ8PkIhAzgdxTjRZ-AgoenEB-LsgiEIHlnN08YGZ0t2D1rWUiO-tyGmfvF_arPOwF9auugDFOh8W",
-                    
+                    "to": this.state.enviarA,
                     "notification": {
-                        "body": "Cuerpo del Mensaje",
                         "title": "Titulo del Mensaje",
+                        "body": "Cuerpo del Mensaje",
                     },
                     "data": {
                         "title": "Alexander",
